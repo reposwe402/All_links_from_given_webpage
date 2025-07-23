@@ -1,17 +1,11 @@
-import requests as rq
-from bs4 import BeautifulSoup
+from input_handler import get_url
+from data_fetcher import fetch_data
+from html_parser import parse_html
+from file_writer import save_links
 
-url = input("Enter Link: ")
-if ("https" or "http") in url:
-    data = rq.get(url)
-else:
-    data = rq.get("https://" + url)
-soup = BeautifulSoup(data.text, "html.parser")
-links = []
-for link in soup.find_all("a"):
-    links.append(link.get("href"))
+from utils import save_links
 
-# Writing the output to a file (myLinks.txt) instead of to stdout
-# You can change 'a' to 'w' to overwrite the file each time
-with open("myLinks.txt", 'a') as saved:
-    print(links[:10], file=saved)
+url = get_url()
+data = fetch_data(url)
+links = parse_html(data.text)
+save_links(links)
